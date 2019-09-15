@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TankPlayerController.h"
+#include "Engine/World.h"
 
 
 void ATankPlayerController::BeginPlay()
@@ -35,13 +35,13 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!GetControlledTank()) { return; }
 
 	FVector HitLocation;
-	if (GetSightRayHitLocation(HitLocation))
+	if (GetLookVectorHitLocation(HitLocation))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString())
 	}
 }
 
-bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const
+bool ATankPlayerController::GetLookVectorHitLocation(FVector& OutHitLocation) const
 {
 	/// Find crosshair position in screen coordinates
 	int32 ViewportSizeX;
@@ -53,16 +53,30 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) cons
 	FVector LookDirection;
 	if (GetLookDirection(ScreenLocation, LookDirection)) 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Look direction: %s"), *LookDirection.ToString());
+		/// Line trace along world space vector to find location
+		FVector HitLocation;
+		if (GetLookVectorHitLocation(LineTraceRange, LookDirection, HitLocation))
+		{
+			OutHitLocation = HitLocation;
+			return true;
+		}
+
 	}
-
-
-	
-	return true;
+	OutHitLocation = FVector(0.0);
+	return false;
 }
 
 bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const
 {
 	FVector CameraWorldLocation;
 	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection);
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(float LineTraceRange, FVector LookDirection, FVector& OutHitLocation) const
+{
+	FHitResult OutHit;
+	FVector StartLocation = PlayerCameraManager->GetCameraLocation();
+	bool DidHit = GetWorld()->LineTraceSingleByChannel(OutHit, StartLocation, StartLocation + (LookDirection* LineTraceRange), ECollisionChannel::ECC_Visibility);
+	OutHitLocation = OutHit.Location;
+	return DidHit;
 }
