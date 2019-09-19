@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #include "TankAIController.h"
+#include "Components/PrimitiveComponent.h"
 #include "Engine/World.h"
 #include "TankPlayerController.h"
 #include "GameFramework/PlayerController.h"
@@ -15,6 +17,16 @@ void ATankAIController::BeginPlay()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No player controlled tank found!"), *GetName())
+	}
+}
+
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (GetPlayerTank())
+	{
+		FVector Target = GetPlayerTank()->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
+		GetControlledTank()->AimAt(Target);
 	}
 }
 
