@@ -9,14 +9,6 @@
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	if (GetPlayerTank())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Found player controlled tank: %s"), *GetName(),*GetPlayerTank()->GetName())
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No player controlled tank found!"), *GetName())
-	}
 }
 
 void ATankAIController::Tick(float DeltaTime)

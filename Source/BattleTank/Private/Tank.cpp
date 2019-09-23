@@ -3,6 +3,8 @@
 
 #include "Tank.h"
 #include "TankAimingComponent.h"
+#include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ATank::ATank()
@@ -35,6 +37,12 @@ void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 void ATank::SetTurretReference(UTankTurret* TurretToSet)
 {
 	TankAimingComponent->SetTurretReference(TurretToSet);
+}
+
+void ATank::Fire()
+{
+	float RealTimeSeconds = GetWorld()->GetTimeSeconds();
+	UE_LOG(LogTemp, Warning, TEXT("Firing at time: %f"), RealTimeSeconds)
 }
 
 void ATank::AimAt(FVector HitLocation)
