@@ -50,6 +50,8 @@ void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
+	FVector DropHitLocation(0, 0, -400);
+	HitLocation = HitLocation + DropHitLocation;
 	// Check barrel and turret pointers
 	if (!Barrel) { return; }
 	if (!Turret) { return; }
