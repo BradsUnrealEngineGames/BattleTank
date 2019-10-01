@@ -45,15 +45,14 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 
 void ATank::Fire()
 {
-	float RealTimeSeconds = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("Firing at time: %f"), RealTimeSeconds)
-
 	if (!Barrel) { return; }
-	GetWorld()->SpawnActor<AProjectile>(
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
 		ProjectileBlueprint,
 		Barrel->GetSocketLocation(FName("ProjectileStart")),
 		Barrel->GetSocketRotation(FName("ProjectileStart"))
 	);
+
+	Projectile->LaunchProjectile(LaunchSpeed);
 }
 
 void ATank::AimAt(FVector HitLocation)
