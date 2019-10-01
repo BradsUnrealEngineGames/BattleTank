@@ -4,7 +4,10 @@
 #include "Tank.h"
 #include "TankAimingComponent.h"
 #include "Engine/World.h"
+#include "Engine/StaticMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
+#include "TankBarrel.h"
+#include "Projectile.h"
 
 // Sets default values
 ATank::ATank()
@@ -32,6 +35,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+	Barrel = BarrelToSet;
 }
 
 void ATank::SetTurretReference(UTankTurret* TurretToSet)
@@ -43,6 +47,13 @@ void ATank::Fire()
 {
 	float RealTimeSeconds = GetWorld()->GetTimeSeconds();
 	UE_LOG(LogTemp, Warning, TEXT("Firing at time: %f"), RealTimeSeconds)
+
+	if (!Barrel) { return; }
+	GetWorld()->SpawnActor<AProjectile>(
+		ProjectileBlueprint,
+		Barrel->GetSocketLocation(FName("ProjectileStart")),
+		Barrel->GetSocketRotation(FName("ProjectileStart"))
+	);
 }
 
 void ATank::AimAt(FVector HitLocation)
