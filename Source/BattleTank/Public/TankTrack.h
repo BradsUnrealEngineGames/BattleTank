@@ -21,6 +21,6 @@ private:
 protected:
 
 public:
-	UFUNCTION(BlueprintCallable, Category = Input)
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	void SetThrottle(float Throttle);
 };

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Bradley Olson
 
 
 #include "TankMovementComponent.h"
@@ -33,4 +33,6 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
 
 	float Cross = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
 	IntendTurnRight(Cross);
+
+	UE_LOG(LogTemp, Warning, TEXT("Right: %f, Foreward: %f"), Cross, Dot);
 }

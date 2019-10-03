@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Bradley Olson
 
 #pragma once
 
@@ -20,17 +20,16 @@ private:
 	UTankTrack* LeftTrack = nullptr;
 
 	UTankTrack* RightTrack = nullptr;
+
+	// Called from the pathfinding logic by the AI controller in Nav Movement Component
+	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 public:
-	UFUNCTION(BlueprintCallable, Category = Action)
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void IntendMoveForward(float Throw);
 
-	UFUNCTION(BlueprintCallable, Category = Action)
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void IntendTurnRight(float Throw);
 	
-	UFUNCTION(BlueprintCallable, Category = Setup)
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void InitializeComponent(UTankTrack* LeftTrackToSet, UTankTrack* RightTrackToSet);
-
-	//TODO check best protection
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 };
