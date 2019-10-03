@@ -20,7 +20,7 @@ void UTankMovementComponent::IntendMoveForward(float Throw) {
 // Used with negative values for left turns
 void UTankMovementComponent::IntendTurnRight(float Throw) {
 	LeftTrack->SetThrottle(Throw);
-	RightTrack->SetThrottle(-Throw);
+	RightTrack->SetThrottle((-1*Throw));
 }
 
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
@@ -29,6 +29,8 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
 	FVector AIForwardIntention = MoveVelocity.GetSafeNormal();
 
 	float Dot = FVector::DotProduct(TankForward, AIForwardIntention);
-
 	IntendMoveForward(Dot);
+
+	float Cross = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
+	IntendTurnRight(Cross);
 }
