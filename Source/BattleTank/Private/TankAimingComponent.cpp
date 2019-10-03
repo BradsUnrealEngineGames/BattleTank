@@ -29,10 +29,13 @@ void UTankAimingComponent::BeginPlay()
 }
 
 void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet) {
-	if (BarrelToSet && TurretToSet) {
+	if (ensure(BarrelToSet && TurretToSet)) {
 		Barrel = BarrelToSet;
 		Turret = TurretToSet;
 		LaunchSpeed = Cast<ATank>(GetOwner())->LaunchSpeed;
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Function Initialize: %s could not find Barrel or Turret"), *GetName());
 	}
 }
 
@@ -45,25 +48,19 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
-{
-	if (!BarrelToSet) { return; }
-	Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
-{
-	if (!TurretToSet) { return; }
-	Turret = TurretToSet;
-}
-
 void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	FVector DropHitLocation(0, 0, -400);
 	HitLocation = HitLocation + DropHitLocation;
 	// Check barrel and turret pointers
-	if (!Barrel) { return; }
-	if (!Turret) { return; }
+	if (!ensure(Barrel)) { 
+		UE_LOG(LogTemp, Error, TEXT("Function AimAt: %s could not find Barrel"), *GetName()); 
+		return; 
+	}
+	if (!ensure(Turret)) { 
+		UE_LOG(LogTemp, Error, TEXT("Function AimAt: %s could not find Barrel"), *GetName()); 
+		return; 
+	}
 	/// Formulate inputs and call SuggestProjectileVelocity
 	FVector OutLaunchVelocity(0);
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));

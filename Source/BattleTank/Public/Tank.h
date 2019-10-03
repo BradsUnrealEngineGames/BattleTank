@@ -26,6 +26,8 @@ public:
 protected:
 
 private:
+	void BeginPlay();
+
 	// Sets default values for this pawn's properties
 	ATank();
 

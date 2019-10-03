@@ -5,9 +5,12 @@
 #include "TankTrack.h"
 
 void UTankMovementComponent::InitializeComponent(UTankTrack* LeftTrackToSet, UTankTrack* RightTrackToSet) {
-	if (LeftTrackToSet && RightTrackToSet) {
+	if (ensure(LeftTrackToSet && RightTrackToSet)) {
 		LeftTrack = LeftTrackToSet;
 		RightTrack = RightTrackToSet;
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Function InitializeComponent: %s could not find left or right track"), *GetName());
 	}
 }
 
@@ -33,6 +36,4 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
 
 	float Cross = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
 	IntendTurnRight(Cross);
-
-	UE_LOG(LogTemp, Warning, TEXT("Right: %f, Foreward: %f"), Cross, Dot);
 }

@@ -17,11 +17,18 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void ATank::BeginPlay() {
+	Super::BeginPlay();
+}
+
 void ATank::Fire()
 {
 	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds);
 	UTankBarrel*  Barrel = FindComponentByClass<UTankAimingComponent>()->Barrel;
-	if (!Barrel) { return; }
+	if (!ensure(Barrel)) { 
+		UE_LOG(LogTemp, Error, TEXT("%s could not find Barrel"), *GetName());
+		return; 
+	}
 	if (!IsReloaded) { return; }
 	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
 		ProjectileBlueprint,
