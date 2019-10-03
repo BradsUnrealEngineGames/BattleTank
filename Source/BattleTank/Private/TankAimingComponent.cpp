@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "TankTurret.h"
 #include "GameFramework/Actor.h"
+#include "Tank.h"
 
 
 // Sets default values for this component's properties
@@ -25,6 +26,14 @@ void UTankAimingComponent::BeginPlay()
 
 	// ...
 	
+}
+
+void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet) {
+	if (BarrelToSet && TurretToSet) {
+		Barrel = BarrelToSet;
+		Turret = TurretToSet;
+		LaunchSpeed = Cast<ATank>(GetOwner())->LaunchSpeed;
+	}
 }
 
 
@@ -48,7 +57,7 @@ void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
 	Turret = TurretToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	FVector DropHitLocation(0, 0, -400);
 	HitLocation = HitLocation + DropHitLocation;

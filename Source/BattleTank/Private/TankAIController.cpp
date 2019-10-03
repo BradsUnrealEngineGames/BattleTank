@@ -5,6 +5,7 @@
 #include "Tank.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "TankAimingComponent.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -23,7 +24,7 @@ void ATankAIController::Tick(float DeltaTime)
 
 		FVector Target = PlayerTank->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
 
-		ControlledTank->AimAt(Target);
+		ControlledTank->FindComponentByClass<UTankAimingComponent>()->AimAt(Target);
 		ControlledTank->Fire();
 	}
 }
