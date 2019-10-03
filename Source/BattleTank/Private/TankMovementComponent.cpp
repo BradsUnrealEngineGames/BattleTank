@@ -13,14 +13,18 @@ void UTankMovementComponent::InitializeComponent(UTankTrack* LeftTrackToSet, UTa
 
 // Used with negative values for backward acceleration
 void UTankMovementComponent::IntendMoveForward(float Throw) {
-	UE_LOG(LogTemp, Warning, TEXT("Intend move forward: %f"),Throw);
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
 }
 
 // Used with negative values for left turns
 void UTankMovementComponent::IntendTurnRight(float Throw) {
-	UE_LOG(LogTemp, Warning, TEXT("Intend move forward: %f"), Throw);
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(-Throw);
+}
+
+void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
+{
+	FString TankName = GetOwner()->GetName();
+	UE_LOG(LogTemp, Warning, TEXT("%s: Moving at %s"), *TankName, *MoveVelocity.ToString());
 }
