@@ -4,11 +4,8 @@
 #include "Tank.h"
 #include "TankAimingComponent.h"
 #include "Engine/World.h"
-#include "Engine/StaticMeshSocket.h"
-#include "Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 #include "Projectile.h"
-#include "TankMovementComponent.h"
 
 // Sets default values
 ATank::ATank()
