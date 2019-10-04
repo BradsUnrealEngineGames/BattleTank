@@ -33,10 +33,14 @@ private:
 
 	void MoveTurret(FVector AimDirection);
 
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	TSubclassOf<AProjectile> ProjectileBlueprint;
+	FVector AimDirection = FVector(0.f,0.f,0.f);
+
+	bool IsBarrelMoving() const;
+
+	
 
 	float ReloadTimeInSeconds = 3.f;
+
 	float LastFireTime;
 
 protected:
@@ -45,6 +49,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringState FiringState = EFiringState::Aiming;
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 public:	
 

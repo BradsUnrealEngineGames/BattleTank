@@ -31,7 +31,7 @@ APawn* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(GetControlledTank())) { 
+if (!ensure(GetControlledTank())) { 
 		UE_LOG(LogTemp, Error, TEXT("TankPlayerController: AimTowardsCrosshair - could not get controlled tank"))
 		return; 
 	}
