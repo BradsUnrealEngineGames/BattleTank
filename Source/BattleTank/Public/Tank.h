@@ -13,24 +13,8 @@ class BATTLETANK_API ATank : public APawn
 {
 	GENERATED_BODY()
 
-public:
-	UFUNCTION(BlueprintCallable, Category = "Action")
-	void Fire();
-
-	UPROPERTY(EditAnywhere, Category = "Firing")
-	float LaunchSpeed = 4000; // Sensible starting value
-
-protected:
-
 private:
-	void BeginPlay();
 
 	// Sets default values for this pawn's properties
 	ATank();
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	TSubclassOf<AProjectile> ProjectileBlueprint;
-
-	float ReloadTimeInSeconds = 3.f;
-	float LastFireTime = -3.f;
 };

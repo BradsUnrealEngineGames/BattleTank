@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Projectile.h"
 #include "TankAimingComponent.generated.h"
+
 
 
 // Enum for aiming state
@@ -15,9 +16,8 @@ enum class EFiringState : uint8 {
 	Locked
 };
 
-
-class UTankBarrel;
 class UTankTurret;
+class UTankBarrel;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
@@ -28,11 +28,15 @@ private:
 
 	UTankTurret* Turret = nullptr;
 
-	float LaunchSpeed;
-
 	void MoveBarrel(FVector AimDirection);
 
 	void MoveTurret(FVector AimDirection);
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	float ReloadTimeInSeconds = 3.f;
+	float LastFireTime = -3.f;
 
 protected:
 	// Called when the game starts
@@ -43,7 +47,7 @@ protected:
 
 public:	
 
-	UTankBarrel* Barrel = nullptr;
+	UTankBarrel* Barrel;
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
@@ -54,4 +58,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	void Fire();
+
+	UPROPERTY(EditAnywhere, Category = "Firing")
+	float LaunchSpeed = 4000.f; // Sensible starting value
 };

@@ -5,8 +5,6 @@
 #include "TankBarrel.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankTurret.h"
-#include "GameFramework/Actor.h"
-#include "Tank.h"
 
 
 // Sets default values for this component's properties
@@ -23,7 +21,7 @@ UTankAimingComponent::UTankAimingComponent()
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	Barrel = GetOwner()->FindComponentByClass<UTankBarrel>();
 	// ...
 	
 }
@@ -32,7 +30,6 @@ void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	if (ensure(BarrelToSet && TurretToSet)) {
 		Barrel = BarrelToSet;
 		Turret = TurretToSet;
-		LaunchSpeed = Cast<ATank>(GetOwner())->LaunchSpeed;
 	}
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Function Initialize: %s could not find Barrel or Turret"), *GetName());
@@ -91,4 +88,23 @@ void UTankAimingComponent::MoveTurret(FVector AimDirection)
 	FRotator AimAsRotator = AimDirection.Rotation();
 	FRotator DeltaRotator = AimAsRotator - TurretRotation;
 	Turret->RotateTurret(DeltaRotator.Yaw);
+}
+
+void UTankAimingComponent::Fire()
+{
+	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds);
+	if (!ensure(Barrel)) {
+		UE_LOG(LogTemp, Error, TEXT("%s could not find Barrel"), *GetName());
+		return;
+	}
+	if (!IsReloaded) { return; }
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
+		ProjectileBlueprint,
+		Barrel->GetSocketLocation(FName("ProjectileStart")),
+		Barrel->GetSocketRotation(FName("ProjectileStart"))
+		);
+	if (ensure(Projectile)) {
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }

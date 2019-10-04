@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
-#include "Tank.h"
 #include "Engine/World.h"
 #include "TankAimingComponent.h"
 
@@ -25,9 +24,9 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimTowardsCrosshair();
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
+APawn* ATankPlayerController::GetControlledTank() const
 {
-	return Cast<ATank>(GetPawn());
+	return GetPawn();
 }
 
 void ATankPlayerController::AimTowardsCrosshair()
