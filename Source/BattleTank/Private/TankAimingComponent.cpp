@@ -12,15 +12,23 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	// ...
 }
 
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (GetWorld()->GetTimeSeconds() -LastFireTime > ReloadTimeInSeconds) {
+		FiringState = EFiringState::Aiming;
+	}
+}
 
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	// So that first fire is after initial reload
+	LastFireTime = FPlatformTime::Seconds();
 	Barrel = GetOwner()->FindComponentByClass<UTankBarrel>();
 	// ...
 	
@@ -34,15 +42,6 @@ void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	else {
 		UE_LOG(LogTemp, Error, TEXT("Function Initialize: %s could not find Barrel or Turret"), *GetName());
 	}
-}
-
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
@@ -92,12 +91,11 @@ void UTankAimingComponent::MoveTurret(FVector AimDirection)
 
 void UTankAimingComponent::Fire()
 {
-	bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds);
 	if (!ensure(Barrel)) {
 		UE_LOG(LogTemp, Error, TEXT("%s could not find Barrel"), *GetName());
 		return;
 	}
-	if (!IsReloaded) { return; }
+	if (FiringState == EFiringState::Reloading) { return; }
 	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
 		ProjectileBlueprint,
 		Barrel->GetSocketLocation(FName("ProjectileStart")),
@@ -105,6 +103,7 @@ void UTankAimingComponent::Fire()
 		);
 	if (ensure(Projectile)) {
 		Projectile->LaunchProjectile(LaunchSpeed);
-		LastFireTime = FPlatformTime::Seconds();
+		LastFireTime = GetWorld()->GetTimeSeconds();
+		FiringState = EFiringState::Reloading;
 	}
 }

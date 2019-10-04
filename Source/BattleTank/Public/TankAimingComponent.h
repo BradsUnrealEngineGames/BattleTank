@@ -25,6 +25,7 @@ class BATTLETANK_API UTankAimingComponent : public UActorComponent
 	GENERATED_BODY()
 
 private:
+	virtual void TickComponent(float DelatTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UTankTurret* Turret = nullptr;
 
@@ -36,7 +37,7 @@ private:
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	float ReloadTimeInSeconds = 3.f;
-	float LastFireTime = -3.f;
+	float LastFireTime;
 
 protected:
 	// Called when the game starts
@@ -50,9 +51,6 @@ public:
 	UTankBarrel* Barrel;
 	// Sets default values for this component's properties
 	UTankAimingComponent();
-
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void AimAt(FVector HitLocation);
 
