@@ -41,14 +41,14 @@ private:
 
 	float ReloadTimeInSeconds = 3.f;
 
-	float LastFireTime;
+	float LastFireTime = 0;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringState FiringState = EFiringState::Aiming;
+	EFiringState FiringState = EFiringState::Locked;
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint;
@@ -69,4 +69,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Firing")
 	float LaunchSpeed = 4000.f; // Sensible starting value
+
+	EFiringState GetFiringState();
 };

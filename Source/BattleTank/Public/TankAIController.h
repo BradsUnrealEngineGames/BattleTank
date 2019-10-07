@@ -22,5 +22,7 @@ private:
 	void BeginPlay() override;
 
 	// How close can the AI tank get to the player before stopping
-	float AcceptanceRadius = 3000.f;
+protected:
+	UPROPERTY(EditAnywhere, Category = "Action")
+	float AcceptanceRadius = 8000.f;
 };

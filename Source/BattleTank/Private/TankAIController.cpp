@@ -25,6 +25,9 @@ void ATankAIController::Tick(float DeltaTime)
 		FVector Target = PlayerTank->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
 
 		ControlledTank->FindComponentByClass<UTankAimingComponent>()->AimAt(Target);
-		ControlledTank->FindComponentByClass<UTankAimingComponent>()->Fire();
+		if (ControlledTank->FindComponentByClass<UTankAimingComponent>()->GetFiringState() == EFiringState::Locked) {
+			ControlledTank->FindComponentByClass<UTankAimingComponent>()->Fire();
+		}
+		
 	}
 }
