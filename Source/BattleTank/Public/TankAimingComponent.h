@@ -40,7 +40,7 @@ private:
 
 	
 
-	float ReloadTimeInSeconds = 3.f;
+	
 
 	float LastFireTime = 0;
 
@@ -52,10 +52,13 @@ protected:
 	EFiringState FiringState = EFiringState::Locked;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere ,Category = "State")
-	int ShotsLeft = 3;
+	int32 ShotsLeft = 3;
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float ReloadTimeInSeconds = 3.f;
 
 public:	
 
