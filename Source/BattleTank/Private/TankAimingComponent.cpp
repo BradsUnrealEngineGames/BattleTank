@@ -18,7 +18,10 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if (GetWorld()->GetTimeSeconds() - LastFireTime > ReloadTimeInSeconds) {
+	if (ShotsLeft <= 0) {
+		FiringState = EFiringState::OutOfAmmo;
+	}
+	else if (GetWorld()->GetTimeSeconds() - LastFireTime > ReloadTimeInSeconds) {
 		if (IsBarrelMoving()) {
 			FiringState = EFiringState::Aiming;
 		}
@@ -117,6 +120,7 @@ bool UTankAimingComponent::IsBarrelMoving() const
 
 void UTankAimingComponent::Fire()
 {
+	if (ShotsLeft <= 0) { return; }
 	if (!ensure(Barrel)) {
 		UE_LOG(LogTemp, Error, TEXT("%s could not find Barrel"), *GetName());
 		return;
@@ -131,6 +135,7 @@ void UTankAimingComponent::Fire()
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = GetWorld()->GetTimeSeconds();
 		FiringState = EFiringState::Reloading;
+		ShotsLeft--;
 	}
 }
 

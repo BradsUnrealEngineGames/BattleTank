@@ -13,7 +13,8 @@ UENUM()
 enum class EFiringState : uint8 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 class UTankTurret;
@@ -50,6 +51,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringState FiringState = EFiringState::Locked;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere ,Category = "State")
+	int ShotsLeft = 3;
+
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
@@ -68,7 +72,7 @@ public:
 	void Fire();
 
 	UPROPERTY(EditAnywhere, Category = "Firing")
-	float LaunchSpeed = 4000.f; // Sensible starting value
+	float LaunchSpeed = 8000.f; // Sensible starting value
 
 	EFiringState GetFiringState();
 };
