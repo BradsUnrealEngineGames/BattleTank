@@ -9,6 +9,7 @@
 class UStaticMeshComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
+class URadialForceComponent;
 
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
@@ -17,6 +18,9 @@ class BATTLETANK_API AProjectile : public AActor
 	
 private:	
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,6 +31,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Properties")
 	UParticleSystemComponent* LaunchBlast = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Properties")
+	UParticleSystemComponent* ImpactBlast = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Properties")
+	URadialForceComponent* ExplosionForce = nullptr;
 
 public:	
 	// Sets default values for this actor's properties

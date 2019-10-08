@@ -37,7 +37,6 @@ if (!ensure(GetControlledTank())) {
 	}
 	FVector HitLocation;
 	bool bGotHitLocation = GetLookVectorHitLocation(HitLocation);
-	UE_LOG(LogTemp, Warning, TEXT("bGotHitLocation: %i"), bGotHitLocation);
 	if (bGotHitLocation)
 	{
 		GetControlledTank()->FindComponentByClass<UTankAimingComponent>()->AimAt(HitLocation);
