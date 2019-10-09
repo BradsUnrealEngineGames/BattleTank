@@ -3,16 +3,19 @@
 
 #include "Projectile.h"
 #include "Engine/World.h"
+#include "TimerManager.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 
 // Sets default values
 AProjectile::AProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("CollisionMesh"));
 	SetRootComponent(CollisionMesh);
@@ -45,13 +48,35 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();
+
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+	FTimerHandle Timer;
+	//FTimerDelegate MemberTimerDelegate;
+	//MemberTimerDelegate.BindUFunction(this, "SelfDestruct");
+
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		ProjectileDamage,
+		GetActorLocation(),
+		ExplosionForce->Radius,
+		UDamageType::StaticClass(),
+		TArray<AActor*>() // damage all actors
+	);
+
+	GetWorld()->GetTimerManager().SetTimer
+	(
+		Timer, 
+		this,
+		&AProjectile::SelfDestruct, 
+		1.0f, 
+		false, 
+		DestroyDelay
+	);
 }
 
-// Called every frame
-void AProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+void AProjectile::SelfDestruct() {
+	Destroy();
 }
 
 void AProjectile::LaunchProjectile(float Speed) {
