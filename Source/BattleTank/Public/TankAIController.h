@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-class ATank;
+class APawn;
 
 /**
  * 
@@ -21,8 +21,13 @@ private:
 
 	void BeginPlay() override;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
 	// How close can the AI tank get to the player before stopping
 protected:
 	UPROPERTY(EditAnywhere, Category = "Action")
 	float AcceptanceRadius = 8000.f;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 };

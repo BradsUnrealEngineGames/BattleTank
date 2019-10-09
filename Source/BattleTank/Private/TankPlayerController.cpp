@@ -3,18 +3,32 @@
 #include "TankPlayerController.h"
 #include "Engine/World.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	auto AimingComponent = Cast<ATank>(GetPawn())->FindComponentByClass<UTankAimingComponent>();
 	if (ensure(AimingComponent)) {
 		FoundAimingComponent(AimingComponent);
 	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("Player controller can't find aiming component at begin play"))
+}
+
+/* Sets controlled tank. Necessary because BeginPlay race conditions could prevent the OnDeath delegate from adding the function OnPossessedTankDeath*/
+void ATankPlayerController::SetPawn(APawn* InPawn) {
+	Super::SetPawn(InPawn);
+	if (InPawn) {
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnPossessedTankDeath);
 	}
+}
+
+void ATankPlayerController::OnPossessedTankDeath()
+{
+	StartSpectatingOnly();
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -31,8 +45,8 @@ APawn* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-if (!ensure(GetControlledTank())) { 
-		UE_LOG(LogTemp, Error, TEXT("TankPlayerController: AimTowardsCrosshair - could not get controlled tank"))
+if (!GetControlledTank()) { 
+		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController: AimTowardsCrosshair - could not get controlled tank"))
 		return; 
 	}
 	FVector HitLocation;

@@ -2,14 +2,33 @@
 
 
 #include "TankAIController.h"
-#include "Tank.h"
+#include "GameFramework/Pawn.h"
 #include "Components/PrimitiveComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+/* Sets controlled tank. Necessary because BeginPlay race conditions could prevent the OnDeath delegate from adding the function OnPossessedTankDeath*/
+void ATankAIController::SetPawn(APawn* InPawn) {
+	Super::SetPawn(InPawn);
+	if (InPawn) {
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDeath);
+	}
+}
+
+void ATankAIController::OnPossessedTankDeath()
+{
+	if (GetPawn()) {
+		GetPawn()->DetachFromControllerPendingDestroy();
+	}
 }
 
 void ATankAIController::Tick(float DeltaTime)

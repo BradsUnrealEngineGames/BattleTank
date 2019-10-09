@@ -8,6 +8,10 @@ ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+}
+
+void ATank::BeginPlay() {
+	Super::BeginPlay();
 	CurrentHealth = StartingHealth;
 }
 
@@ -16,11 +20,9 @@ float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, ACo
 	int32 DamagePoints = FPlatformMath::RoundToInt(DamageAmount);
 	int32 DamageToApply = FMath::Clamp(DamagePoints, 0, CurrentHealth);
 
-	UE_LOG(LogTemp, Warning, TEXT("%s took %i damage"), *GetName(), DamageToApply);
 	CurrentHealth = CurrentHealth - DamageToApply;
 	if (CurrentHealth <= 0) {
-		UE_LOG(LogTemp, Warning, TEXT("%s destroyed!"), *GetName());
-		//Destroy();
+		OnDeath.Broadcast();
 	}
 	return DamageToApply;
 }
