@@ -8,31 +8,35 @@
 
 class UPhysicsConstraintComponent;
 class UStaticMeshComponent;
+class USphereComponent;
 
 UCLASS()
 class BATTLETANK_API ASprungWheel : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
-	// Sets default values for this actor's properties
-	ASprungWheel();
+private:
+	void SetupConstraint();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category = "SystemParts")
-	UStaticMeshComponent* Mass;
-
+	USphereComponent* Wheel =  nullptr;
 	UPROPERTY(VisibleAnywhere, Category = "SystemParts")
-	UStaticMeshComponent* Wheel;
-
+	USphereComponent* Axle = nullptr;
 	UPROPERTY(VisibleAnywhere, Category = "SystemParts")
-	UPhysicsConstraintComponent* PhysicsConstraint;
+	UPhysicsConstraintComponent* PhysicsConstraint = nullptr;
+	UPROPERTY(VisibleAnywhere, Category = "SystemParts")
+	UPhysicsConstraintComponent* AxleWheelConstraint = nullptr;
 
 public:	
+	// Sets default values for this actor's properties
+	ASprungWheel();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void AddDrivingForce(float ForceMagnitude);
 };

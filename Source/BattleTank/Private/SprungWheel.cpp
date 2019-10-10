@@ -4,6 +4,7 @@
 #include "SprungWheel.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ASprungWheel::ASprungWheel()
@@ -14,24 +15,23 @@ ASprungWheel::ASprungWheel()
 	PhysicsConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("PhysicsConstraint"));
 	SetRootComponent(PhysicsConstraint);
 
-	Wheel = CreateDefaultSubobject<UStaticMeshComponent>(FName("Wheel"));
-	Wheel->AttachToComponent(PhysicsConstraint, FAttachmentTransformRules::KeepWorldTransform);
+	Axle = CreateDefaultSubobject<USphereComponent>(FName("Axle"));
+	Axle->SetupAttachment(PhysicsConstraint);
+	this->AddInstanceComponent(Axle);
 
-	Mass = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mass"));
-	Mass->AttachToComponent(PhysicsConstraint, FAttachmentTransformRules::KeepWorldTransform);
+	Wheel = CreateDefaultSubobject<USphereComponent>(FName("Wheel"));
+	Wheel->SetupAttachment(Axle);
+	this->AddInstanceComponent(Wheel);
+
+	AxleWheelConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(FName("AxleWheelConstraint"));
+	AxleWheelConstraint->SetupAttachment(Axle);
 }
 
 // Called when the game starts or when spawned
 void ASprungWheel::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (GetAttachParentActor()) {
-		UE_LOG(LogTemp, Warning, TEXT("Not null"));
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("Null"));
-	}
+	SetupConstraint();
 }
 
 // Called every frame
@@ -39,5 +39,20 @@ void ASprungWheel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASprungWheel::AddDrivingForce(float ForceMagnitude)
+{
+	if (Wheel) {
+		Wheel->AddForce(Axle->GetForwardVector() * ForceMagnitude);
+	}
+}
+
+void ASprungWheel::SetupConstraint() {
+	if (!GetAttachParentActor()) { return; }
+	UStaticMeshComponent* BodyRoot = Cast<UStaticMeshComponent>(GetAttachParentActor()->GetRootComponent());
+	if (!BodyRoot) { return; }
+	PhysicsConstraint->SetConstrainedComponents(BodyRoot, NAME_None, Axle, NAME_None);
+	AxleWheelConstraint->SetConstrainedComponents(Axle, NAME_None, Wheel, NAME_None);
 }
 
