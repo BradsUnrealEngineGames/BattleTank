@@ -39,14 +39,15 @@ void ATankAIController::Tick(float DeltaTime)
 
 	if (PlayerTank)
 	{
-		MoveToActor(PlayerTank, AcceptanceRadius);
+		if (ensure(ControlledTank)) {
+			MoveToActor(PlayerTank, AcceptanceRadius);
 
-		FVector Target = PlayerTank->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
+			FVector Target = PlayerTank->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
 
-		ControlledTank->FindComponentByClass<UTankAimingComponent>()->AimAt(Target);
-		if (ControlledTank->FindComponentByClass<UTankAimingComponent>()->GetFiringState() == EFiringState::Locked) {
-			ControlledTank->FindComponentByClass<UTankAimingComponent>()->Fire();
+			ControlledTank->FindComponentByClass<UTankAimingComponent>()->AimAt(Target);
+			if (ControlledTank->FindComponentByClass<UTankAimingComponent>()->GetFiringState() == EFiringState::Locked) {
+				ControlledTank->FindComponentByClass<UTankAimingComponent>()->Fire();
+			}
 		}
-		
 	}
 }
