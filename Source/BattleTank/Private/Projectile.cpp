@@ -10,6 +10,7 @@
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/DamageType.h"
+#include "Tank.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -45,6 +46,16 @@ void AProjectile::BeginPlay()
 }
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+	ATank* OtherTank = Cast<ATank>(OtherActor);
+	if (OtherTank) {
+		if (Responsible) {
+			APlayerController* Owner = Cast<APlayerController>(Responsible->GetController());
+			if (Owner) {
+				Responsible->CurrentHealth = Responsible->CurrentHealth + ProjectileDamage;
+			}
+		}
+	}
+
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();

@@ -21,7 +21,7 @@ private:
 	UTankTrack();
 	// Max force per track in newtons
 	UPROPERTY(EditAnywhere)
-	float TrackMaxDrivingForce = 60000000;
+	float TrackMaxDrivingForce = 200000000;
 
 	TArray<ASprungWheel*> GetWheels() const;
 

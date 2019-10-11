@@ -18,6 +18,13 @@ class BATTLETANK_API ASprungWheel : public AActor
 private:
 	void SetupConstraint();
 
+	void ApplyForce();
+
+	float TotalForceMagnitudeThisFrame = 0;
+
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

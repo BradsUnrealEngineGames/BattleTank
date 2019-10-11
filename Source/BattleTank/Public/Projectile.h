@@ -10,6 +10,7 @@ class UStaticMeshComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
 class URadialForceComponent;
+class ATank;
 
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
@@ -45,6 +46,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float ProjectileDamage = 20;
+
+	UPROPERTY(VisibleAnywhere, Category = "Properties")
+	ATank* Responsible = nullptr;
 
 public:	
 	// Sets default values for this actor's properties
