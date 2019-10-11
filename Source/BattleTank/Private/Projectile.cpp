@@ -51,7 +51,9 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 		if (Responsible) {
 			APlayerController* Owner = Cast<APlayerController>(Responsible->GetController());
 			if (Owner) {
-				Responsible->CurrentHealth = Responsible->CurrentHealth + ProjectileDamage;
+				if (OtherTank->CurrentHealth > 0) {
+					Responsible->CurrentHealth = Responsible->CurrentHealth + ProjectileDamage/2;
+				}
 			}
 		}
 	}

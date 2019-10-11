@@ -47,8 +47,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float ProjectileDamage = 20;
 
-	UPROPERTY(VisibleAnywhere, Category = "Properties")
-	ATank* Responsible = nullptr;
+	
 
 public:	
 	// Sets default values for this actor's properties
@@ -56,4 +55,6 @@ public:
 
 	void LaunchProjectile(float Speed);
 
+	UPROPERTY(VisibleAnywhere, Category = "Properties")
+	ATank* Responsible = nullptr;
 };

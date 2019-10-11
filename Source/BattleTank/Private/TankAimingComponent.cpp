@@ -5,6 +5,7 @@
 #include "TankBarrel.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankTurret.h"
+#include "Tank.h"
 
 
 // Sets default values for this component's properties
@@ -132,6 +133,7 @@ void UTankAimingComponent::Fire()
 		Barrel->GetSocketRotation(FName("ProjectileStart"))
 		);
 	if (ensure(Projectile)) {
+		Projectile->Responsible = Cast<ATank>(GetOwner());
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = GetWorld()->GetTimeSeconds();
 		FiringState = EFiringState::Reloading;
