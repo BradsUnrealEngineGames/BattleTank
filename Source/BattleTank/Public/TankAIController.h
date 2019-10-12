@@ -23,6 +23,8 @@ private:
 
 	virtual void SetPawn(APawn* InPawn) override;
 
+	bool Dead = false;
+
 	// How close can the AI tank get to the player before stopping
 protected:
 	UPROPERTY(EditAnywhere, Category = "Action")
@@ -30,4 +32,7 @@ protected:
 
 	UFUNCTION()
 	void OnPossessedTankDeath();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+	void OnPossessedTankDeathBlueprintAI();
 };

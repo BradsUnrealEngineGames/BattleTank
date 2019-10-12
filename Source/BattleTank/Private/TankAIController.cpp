@@ -26,8 +26,13 @@ void ATankAIController::SetPawn(APawn* InPawn) {
 
 void ATankAIController::OnPossessedTankDeath()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Called cpp on possessed tank death"))
 	if (GetPawn()) {
+		OnPossessedTankDeathBlueprintAI();
+		Dead = true;
 		GetPawn()->DetachFromControllerPendingDestroy();
+		UE_LOG(LogTemp, Warning, TEXT("Found pawn"));
+		
 	}
 }
 
@@ -36,18 +41,20 @@ void ATankAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	APawn* PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
 	APawn* ControlledTank = GetPawn();
+	if (!Dead) {
+		if (PlayerTank)
+		{
+			if (ensure(ControlledTank)) {
+				MoveToActor(PlayerTank, AcceptanceRadius);
 
-	if (PlayerTank)
-	{
-		if (ensure(ControlledTank)) {
-			MoveToActor(PlayerTank, AcceptanceRadius);
+				FVector Target = PlayerTank->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
 
-			FVector Target = PlayerTank->FindComponentByClass<UPrimitiveComponent>()->GetComponentLocation();
-
-			ControlledTank->FindComponentByClass<UTankAimingComponent>()->AimAt(Target);
-			if (ControlledTank->FindComponentByClass<UTankAimingComponent>()->GetFiringState() == EFiringState::Locked) {
-				ControlledTank->FindComponentByClass<UTankAimingComponent>()->Fire();
+				ControlledTank->FindComponentByClass<UTankAimingComponent>()->AimAt(Target);
+				if (ControlledTank->FindComponentByClass<UTankAimingComponent>()->GetFiringState() == EFiringState::Locked) {
+					ControlledTank->FindComponentByClass<UTankAimingComponent>()->Fire();
+				}
 			}
 		}
 	}
+	
 }

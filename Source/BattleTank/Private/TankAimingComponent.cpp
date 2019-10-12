@@ -56,8 +56,8 @@ void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* Tur
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
 {
-	//FVector DropHitLocation(0, 0, -200);
-	//HitLocation = HitLocation + DropHitLocation;
+	FVector DropHitLocation(0, 0, -200);
+	HitLocation = HitLocation + DropHitLocation;
 	// Check barrel and turret pointers
 	if (!ensure(Barrel)) { 
 		UE_LOG(LogTemp, Error, TEXT("Function AimAt: %s could not find Barrel"), *GetName()); 

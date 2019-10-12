@@ -26,9 +26,11 @@ void ATankPlayerController::SetPawn(APawn* InPawn) {
 	}
 }
 
+
 void ATankPlayerController::OnPossessedTankDeath()
 {
 	StartSpectatingOnly();
+	OnPossessedTankDeathBlueprint();
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
