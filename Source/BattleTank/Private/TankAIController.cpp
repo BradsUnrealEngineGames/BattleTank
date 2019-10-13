@@ -27,9 +27,11 @@ void ATankAIController::SetPawn(APawn* InPawn) {
 void ATankAIController::OnPossessedTankDeath()
 {
 	if (GetPawn()) {
-		OnPossessedTankDeathBlueprintAI();
-		Dead = true;
-		//GetPawn()->DetachFromControllerPendingDestroy();
+		if (Dead != true) {
+			OnPossessedTankDeathBlueprintAI();
+			Dead = true;
+			//GetPawn()->DetachFromControllerPendingDestroy();
+		}
 	}
 }
 
