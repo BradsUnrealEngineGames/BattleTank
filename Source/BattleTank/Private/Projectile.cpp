@@ -24,17 +24,17 @@ AProjectile::AProjectile()
 	CollisionMesh->SetVisibility(true);
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
-	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	LaunchBlast->SetupAttachment(RootComponent);
 
 	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("ImpactBlast"));
-	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	ImpactBlast->SetupAttachment(RootComponent);
 	ImpactBlast->bAutoActivate = false;
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
 	ProjectileMovement->bAutoActivate = false;
 
 	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("ExplosionForce"));
-	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+	ExplosionForce->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

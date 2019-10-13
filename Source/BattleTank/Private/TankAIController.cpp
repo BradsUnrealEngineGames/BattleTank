@@ -26,13 +26,10 @@ void ATankAIController::SetPawn(APawn* InPawn) {
 
 void ATankAIController::OnPossessedTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called cpp on possessed tank death"))
 	if (GetPawn()) {
 		OnPossessedTankDeathBlueprintAI();
 		Dead = true;
-		GetPawn()->DetachFromControllerPendingDestroy();
-		UE_LOG(LogTemp, Warning, TEXT("Found pawn"));
-		
+		//GetPawn()->DetachFromControllerPendingDestroy();
 	}
 }
 
