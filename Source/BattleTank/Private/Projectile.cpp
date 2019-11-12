@@ -35,6 +35,9 @@ AProjectile::AProjectile()
 
 	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("ExplosionForce"));
 	ExplosionForce->SetupAttachment(RootComponent);
+
+	VisibilityMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("VisibilityMesh"));
+	VisibilityMesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -86,6 +89,8 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 		false, 
 		DestroyDelay
 	);
+
+	VisibilityMesh->DestroyComponent();
 }
 
 void AProjectile::SelfDestruct() {

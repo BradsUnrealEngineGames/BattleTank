@@ -41,6 +41,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Properties")
 	URadialForceComponent* ExplosionForce = nullptr;
 
+	UPROPERTY(VisibleAnywhere, Category = "Properties")
+	UStaticMeshComponent* VisibilityMesh = nullptr;
+
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float DestroyDelay = 10.f;
 

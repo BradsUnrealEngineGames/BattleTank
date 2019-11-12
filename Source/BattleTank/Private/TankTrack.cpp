@@ -24,6 +24,25 @@ TArray<ASprungWheel*> UTankTrack::GetWheels() const
 	return Wheels;
 }
 
+void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// Turn off anti slippage if the tank is almost completely sideways
+	if (GetComponentRotation().Roll > 60.0f || GetComponentRotation().Roll < -60.0f) { return; }
+
+	//Calculate the slippage speed
+	auto SlippageSpeed = FVector::DotProduct(GetOwner()->GetActorRightVector(), GetOwner()->GetVelocity());
+
+	//Work-out the required acceleration this frame to correct
+	FVector CorrectionAcceleration = (-SlippageSpeed / DeltaTime) * GetRightVector();
+	
+	// Calculate and apply sideways force
+	UStaticMeshComponent* TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
+	FVector force = (TankRoot->GetMass() * CorrectionAcceleration) / 3;
+	TankRoot->AddForce(force);
+}
+
 void UTankTrack::SetThrottle(float Throttle) {
 	float CurrentThrottle = FMath::Clamp<float>(Throttle, -1, 1);
 	DriveTrack(CurrentThrottle);

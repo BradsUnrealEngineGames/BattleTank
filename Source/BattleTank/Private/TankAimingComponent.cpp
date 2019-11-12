@@ -71,7 +71,10 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	FVector OutLaunchVelocity(0);
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
 	if (UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed, false, 0, 0, ESuggestProjVelocityTraceOption::DoNotTrace)) {
-		AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection.X = OutLaunchVelocity.X / OutLaunchVelocity.Size();
+		AimDirection.Y = OutLaunchVelocity.Y / OutLaunchVelocity.Size();
+		AimDirection.Z = OutLaunchVelocity.Z / OutLaunchVelocity.Size();
+		
 		MoveBarrel(AimDirection);
 		MoveTurret(AimDirection);
 	}
@@ -82,19 +85,19 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	
 }
 
-void UTankAimingComponent::MoveBarrel(FVector AimDirection) 
+void UTankAimingComponent::MoveBarrel(FVector OutAimDirection) 
 {
 	/// Work out difference between current barrel rotation, and AimDirection
 	FRotator BarrelRotation = Barrel->GetForwardVector().Rotation();
-	FRotator AimAsRotator = AimDirection.Rotation();
+	FRotator AimAsRotator = OutAimDirection.Rotation();
 	FRotator DeltaRotator = AimAsRotator - BarrelRotation;
 	Barrel->Elevate(DeltaRotator.Pitch);
 }
 
-void UTankAimingComponent::MoveTurret(FVector AimDirection)
+void UTankAimingComponent::MoveTurret(FVector OutAimDirection)
 {
 	FRotator TurretRotation = Turret->GetForwardVector().Rotation();
-	FRotator AimAsRotator = AimDirection.Rotation();
+	FRotator AimAsRotator = OutAimDirection.Rotation();
 	FRotator DeltaRotator = AimAsRotator - TurretRotation;
 	if (FMath::Abs(DeltaRotator.Yaw) <= 180) {
 		Turret->RotateTurret(DeltaRotator.Yaw);
